@@ -13,7 +13,8 @@ define([
     'priceUtils',
     'priceBox',
     'jquery-ui-modules/widget',
-    'jquery/jquery.parsequery'
+    'jquery/jquery.parsequery',
+    'fotoramaVideoEvents'
 ], function ($, _, mageTemplate, $t, priceUtils) {
     'use strict';
 
@@ -306,36 +307,50 @@ define([
          */
         _changeProductImage: function () {
             var images,
-                initialImages = this.options.mediaGalleryInitial,
-                galleryObject = $(this.options.mediaGallerySelector).data('gallery');
-
-            if (!galleryObject) {
-                return;
-            }
+                initialImages = this.options.mediaGalleryInitial;
 
             images = this.options.spConfig.images[this.simpleProduct];
 
             if (images) {
                 images = this._sortImages(images);
 
-                if (this.options.gallerySwitchStrategy === 'prepend') {
+                if (this.options.gallerySwitchStrategy === 'prepend' && !_.isEmpty(initialImages)) {
                     images = images.concat(initialImages);
                 }
 
                 images = $.extend(true, [], images);
                 images = this._setImageIndex(images);
 
-                galleryObject.updateData(images);
+                this._updateGalleryData(images);
 
                 $(this.options.mediaGallerySelector).AddFotoramaVideoEvents({
                     selectedOption: this.simpleProduct,
                     dataMergeStrategy: this.options.gallerySwitchStrategy
                 });
             } else {
-                galleryObject.updateData(initialImages);
+                this._updateGalleryData(initialImages);
                 $(this.options.mediaGallerySelector).AddFotoramaVideoEvents();
             }
 
+        },
+
+        /**
+         * Update gallery data
+         *
+         * @param images
+         * @private
+         */
+        _updateGalleryData: function (images) {
+            var gallery = $(this.options.mediaGallerySelector).data('gallery');
+
+            if (!_.isUndefined(gallery)) {
+                gallery.updateData(images);
+            } else {
+                $(this.options.mediaGallerySelector).on('gallery:loaded', function (loadedGallery) {
+                    loadedGallery = $(this.options.mediaGallerySelector).data('gallery');
+                    loadedGallery.updateData(images);
+                }.bind(this));
+            }
         },
 
         /**
