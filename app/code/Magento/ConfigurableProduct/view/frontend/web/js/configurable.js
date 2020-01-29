@@ -337,7 +337,7 @@ define([
         /**
          * Update gallery data
          *
-         * @param images
+         * @param {Array|undefined} images
          * @private
          */
         _updateGalleryData: function (images) {
