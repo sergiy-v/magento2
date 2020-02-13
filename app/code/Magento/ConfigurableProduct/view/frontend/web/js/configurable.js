@@ -314,6 +314,7 @@ define([
                 $(this.options.mediaGallerySelector).on('gallery:loaded', function () {
                     this._changeProductImage();
                 }.bind(this));
+
                 return;
             }
 
@@ -350,6 +351,7 @@ define([
 
             if (isInitial) {
                 $(this.options.mediaGallerySelector).AddFotoramaVideoEvents();
+
                 return;
             }
 

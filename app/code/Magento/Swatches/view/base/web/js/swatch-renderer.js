@@ -1270,6 +1270,7 @@ define([
                     context.find(this.options.mediaGallerySelector).on('gallery:loaded', function () {
                         this.updateBaseImage(images, context, isInProductView);
                     }.bind(this));
+
                     return;
                 }
 
@@ -1302,6 +1303,7 @@ define([
 
             if (isInitial) {
                 $(this.options.mediaGallerySelector).AddFotoramaVideoEvents();
+
                 return;
             }
 
