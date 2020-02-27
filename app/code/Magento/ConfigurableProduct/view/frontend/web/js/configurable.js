@@ -307,50 +307,58 @@ define([
          */
         _changeProductImage: function () {
             var images,
-                initialImages = this.options.mediaGalleryInitial;
+                initialImages = this.options.mediaGalleryInitial,
+                gallery = $(this.options.mediaGallerySelector).data('gallery');
+
+            if (_.isUndefined(gallery)) {
+                $(this.options.mediaGallerySelector).on('gallery:loaded', function () {
+                    this._changeProductImage();
+                }.bind(this));
+
+                return;
+            }
 
             images = this.options.spConfig.images[this.simpleProduct];
 
             if (images) {
                 images = this._sortImages(images);
 
-                if (this.options.gallerySwitchStrategy === 'prepend' && !_.isEmpty(initialImages)) {
+                if (this.options.gallerySwitchStrategy === 'prepend') {
                     images = images.concat(initialImages);
                 }
 
                 images = $.extend(true, [], images);
                 images = this._setImageIndex(images);
 
-                this._updateGalleryData(images);
-
-                $(this.options.mediaGallerySelector).AddFotoramaVideoEvents({
-                    selectedOption: this.simpleProduct,
-                    dataMergeStrategy: this.options.gallerySwitchStrategy
-                });
+                gallery.updateData(images);
+                this._addFotoramaVideoEvents(false);
             } else {
-                this._updateGalleryData(initialImages);
-                $(this.options.mediaGallerySelector).AddFotoramaVideoEvents();
+                gallery.updateData(initialImages);
+                this._addFotoramaVideoEvents(true);
             }
-
         },
 
         /**
-         * Update gallery data
+         * Add video events
          *
-         * @param images
+         * @param {Boolean} isInitial
          * @private
          */
-        _updateGalleryData: function (images) {
-            var gallery = $(this.options.mediaGallerySelector).data('gallery');
-
-            if (!_.isUndefined(gallery)) {
-                gallery.updateData(images);
-            } else {
-                $(this.options.mediaGallerySelector).on('gallery:loaded', function (loadedGallery) {
-                    loadedGallery = $(this.options.mediaGallerySelector).data('gallery');
-                    loadedGallery.updateData(images);
-                }.bind(this));
+        _addFotoramaVideoEvents: function (isInitial) {
+            if (_.isUndefined($.mage.AddFotoramaVideoEvents)) {
+                return;
             }
+
+            if (isInitial) {
+                $(this.options.mediaGallerySelector).AddFotoramaVideoEvents();
+
+                return;
+            }
+
+            $(this.options.mediaGallerySelector).AddFotoramaVideoEvents({
+                selectedOption: this.simpleProduct,
+                dataMergeStrategy: this.options.gallerySwitchStrategy
+            });
         },
 
         /**
