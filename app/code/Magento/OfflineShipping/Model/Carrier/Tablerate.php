@@ -141,9 +141,7 @@ class Tablerate extends \Magento\Shipping\Model\Carrier\AbstractCarrier implemen
                 }
             }
             $oldValue = $request->getPackageValue();
-            $newPackageValue = $oldValue - $freePackageValue;
-            $request->setPackageValue($newPackageValue);
-            $request->setPackageValueWithDiscount($newPackageValue);
+            $request->setPackageValue($oldValue - $freePackageValue);
         }
 
         if (!$request->getConditionName()) {

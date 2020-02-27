@@ -109,9 +109,8 @@ class CustomerPlugin
         CustomerInterface $result,
         CustomerInterface $customer
     ) {
-        /** @var Subscriber $subscriber */
         $subscriber = $this->getSubscriber($result);
-        $subscribeStatus = $this->getIsSubscribedFromExtensionAttributes($customer) ?? $subscriber->isSubscribed();
+        $subscribeStatus = $this->getIsSubscribedFromExtensionAttr($customer) ?? $subscriber->isSubscribed();
         $needToUpdate = $this->isSubscriptionChanged($result, $subscriber, $subscribeStatus);
 
         /**
@@ -119,10 +118,7 @@ class CustomerPlugin
          * and customer is already confirmed registration
          * than need to subscribe customer
          */
-        if ($subscriber->getId()
-            && (int)$subscriber->getStatus() === Subscriber::STATUS_UNCONFIRMED
-            && empty($result->getConfirmation())
-        ) {
+        if ((int)$subscriber->getStatus() === Subscriber::STATUS_UNCONFIRMED && empty($result->getConfirmation())) {
             $needToUpdate = true;
             $subscribeStatus = true;
         }
@@ -133,7 +129,7 @@ class CustomerPlugin
                 : $this->subscriptionManager->unsubscribeCustomer((int)$result->getId(), $storeId);
             $this->customerSubscriber[(int)$result->getId()] = $subscriber;
         }
-        $this->addIsSubscribedExtensionAttribute($result, $subscriber->isSubscribed());
+        $this->addIsSubscribedExtensionAttr($result, $subscriber->isSubscribed());
 
         return $result;
     }
@@ -144,14 +140,14 @@ class CustomerPlugin
      * @param CustomerInterface $customer
      * @return bool|null
      */
-    private function getIsSubscribedFromExtensionAttributes(CustomerInterface $customer): ?bool
+    private function getIsSubscribedFromExtensionAttr(CustomerInterface $customer): ?bool
     {
-        $extensionAttributes = $customer->getExtensionAttributes();
-        if ($extensionAttributes === null || $extensionAttributes->getIsSubscribed() === null) {
+        $newExtensionAttributes = $customer->getExtensionAttributes();
+        if ($newExtensionAttributes === null || $newExtensionAttributes->getIsSubscribed() === null) {
             return null;
         }
 
-        return (bool)$extensionAttributes->getIsSubscribed();
+        return (bool)$newExtensionAttributes->getIsSubscribed();
     }
 
     /**
@@ -227,7 +223,7 @@ class CustomerPlugin
         $extensionAttributes = $customer->getExtensionAttributes();
         if ($extensionAttributes === null || $extensionAttributes->getIsSubscribed() === null) {
             $isSubscribed = $this->getSubscriber($customer)->isSubscribed();
-            $this->addIsSubscribedExtensionAttribute($customer, $isSubscribed);
+            $this->addIsSubscribedExtensionAttr($customer, $isSubscribed);
         }
 
         return $customer;
@@ -239,7 +235,7 @@ class CustomerPlugin
      * @param CustomerInterface $customer
      * @param bool $isSubscribed
      */
-    private function addIsSubscribedExtensionAttribute(CustomerInterface $customer, bool $isSubscribed): void
+    private function addIsSubscribedExtensionAttr(CustomerInterface $customer, bool $isSubscribed): void
     {
         $extensionAttributes = $customer->getExtensionAttributes();
         if ($extensionAttributes === null) {

@@ -1270,8 +1270,14 @@ class Configurable extends \Magento\Catalog\Model\Product\Type\AbstractType
      */
     public function isPossibleBuyFromList($product)
     {
-        //such cases already handled by add to cart action
-        return true;
+        $isAllCustomOptionsDisplayed = true;
+        foreach ($this->getConfigurableAttributes($product) as $attribute) {
+            $eavAttribute = $attribute->getProductAttribute();
+
+            $isAllCustomOptionsDisplayed = ($isAllCustomOptionsDisplayed && $eavAttribute->getUsedInProductListing());
+        }
+
+        return $isAllCustomOptionsDisplayed;
     }
 
     /**

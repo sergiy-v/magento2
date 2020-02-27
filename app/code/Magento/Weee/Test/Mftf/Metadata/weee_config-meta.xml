@@ -14,9 +14,6 @@
                     <object key="enable" dataType="enableFPT">
                         <field key="value">string</field>
                     </object>
-                    <object key="apply_vat" dataType="applyVat">
-                        <field key="value">string</field>
-                    </object>
                 </object>
             </object>
         </object>
@@ -30,11 +27,6 @@
                         <field key="value">integer</field>
                       </object>
                     </object>
-                     <object key="apply_vat" dataType="weee_config_default">
-                         <object key="inherit" dataType="disableVat">
-                             <field key="value">integer</field>
-                         </object>
-                     </object>
                  </object>
             </object>
         </object>

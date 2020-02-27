@@ -1551,7 +1551,6 @@ class AccountManagementTest extends \PHPUnit\Framework\TestCase
             ->with($customer);
 
         $this->sessionManager->expects($this->atLeastOnce())->method('getSessionId');
-        $this->sessionManager->expects($this->atLeastOnce())->method('regenerateId');
 
         $visitor = $this->getMockBuilder(\Magento\Customer\Model\Visitor::class)
             ->disableOriginalConstructor()
@@ -1629,7 +1628,6 @@ class AccountManagementTest extends \PHPUnit\Framework\TestCase
 
         $this->sessionManager->method('isSessionExists')->willReturn(false);
         $this->sessionManager->expects($this->atLeastOnce())->method('getSessionId');
-        $this->sessionManager->expects($this->atLeastOnce())->method('regenerateId');
         $visitor = $this->getMockBuilder(\Magento\Customer\Model\Visitor::class)
             ->disableOriginalConstructor()
             ->setMethods(['getSessionId'])
